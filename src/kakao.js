@@ -11,7 +11,7 @@ const KakaoClient = {
           grant_type: 'authorization_code',
           redirect_uri: this.redirectUri,
         };
-        console.log("params", params);
+        //console.log("params", params);
 
         const response = await fetch('https://kauth.kakao.com/oauth/token', {
           method: 'POST',
@@ -20,7 +20,8 @@ const KakaoClient = {
           },
           body: new URLSearchParams(params),
         });
-
+        console.log("response", response);
+        
         const data = await response.json();
         console.log("data", data);
 
