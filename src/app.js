@@ -1,7 +1,8 @@
 import express from "express";
 import cors from "cors";
 import { DB } from "./mysql.js";
-import { KakaoClient } from "./kakao.js";
+import { KakaoClient } from "./oauth/kakao.js";
+import { NaverClient } from "./oauth/naver.js";
 import { createToken } from "./jwt/jwt.js";
 
 
@@ -14,14 +15,24 @@ app.use(cors());
 
 DB.connect(conn);
 
-// api 생성
-app.get("/kakao/url", (req, res, next) => {
+// 카카오 api 생성
+app.get("/url/kakao", (req, res, next) => {
     const url = KakaoClient.getAuthCodeURL();
-    //console.log("url", url);
 
     res.status(200).json({
         url,
       });
+});
+
+// 네이버 api 생성
+app.get("/url/naver", (req, res, next) => {
+  const url = NaverClient.getNaverAuthCodeURL();
+
+  //console.log("naverurl", url);
+
+  res.status(200).json({
+    url,
+    });
 });
 
 // env 파일 : cid 값 테스트 rest api로 하기 !
