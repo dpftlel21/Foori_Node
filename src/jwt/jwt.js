@@ -5,6 +5,7 @@ const secretKey = process.env.JWT_SECRET_KEY;
 const createToken = (payload) => {
     // jwt.sign 메서드 => 토큰 발행 , 1시간 서버에서 유효
     const token = jwt.sign(payload, secretKey, { expiresIn: '1h' });
+    //console.log("created token", token);
 };
 
 // refresh token

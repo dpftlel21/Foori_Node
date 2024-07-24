@@ -20,7 +20,6 @@ const KakaoClient = {
           },
           body: new URLSearchParams(params),
         });
-        console.log("response", response);
         
         const data = await response.json();
         console.log("data", data);
@@ -40,7 +39,7 @@ const KakaoClient = {
         });
 
         const data = await response.json();
-        console.log("data", data);
+        console.log("userData", data);
 
         return data;
 
