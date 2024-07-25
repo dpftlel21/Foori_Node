@@ -9,7 +9,7 @@ const NaverClient = {
     getNaverAuthCodeURL() {
         return `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${this.client_id}&state=${this.state}&redirect_uri=${this.redirect_uri}`;
     },
-    async getNaverAccessToken(code) {
+    async getAccessToken(code) {
         const params = {
             client_id: this.client_id,
             client_secret: this.client_secret,
@@ -18,7 +18,8 @@ const NaverClient = {
             grant_type: 'authorization_code',
             redirect_uri: this.redirect_uri,
         };
-
+        //console.log("params", params);
+        
         const response = await fetch('https://nid.naver.com/oauth2.0/token', {
             method: 'POST',
             headers: {
@@ -28,7 +29,7 @@ const NaverClient = {
         });
 
         const data = await response.json();
-        console.log("data", data);
+        //console.log("data", data);
 
         const tokenData = {
             access_token: data.access_token,
@@ -37,7 +38,7 @@ const NaverClient = {
 
         return tokenData;
     },
-    async getNaverUserData(token) {
+    async getUserData(token) {
         const response = await fetch('https://openapi.naver.com/v1/nid/me', {
             headers: {
                 Authorization: `Bearer ${token}`,

@@ -35,7 +35,7 @@ app.get("/url/naver", (req, res, next) => {
     });
 });
 
-// env 파일 : cid 값 테스트 rest api로 하기 !
+// 카카오 로그인
 app.post('/login/kakao', async (req, res) => {
   const { code } = req.body;
   try {
@@ -49,8 +49,38 @@ app.post('/login/kakao', async (req, res) => {
       console.log("userExist", userExist);
 
       if(userExist.length === 0){
-        const insertQuery = `INSERT INTO MEMBER (CID, EMAIL, NAME) VALUES (?, ?, ?)`;
-        await DB.query(conn, insertQuery, [userData.id, userData.kakao_account.email, userData.properties.nickname]);
+        const insertQuery = `INSERT INTO MEMBER (CID, EMAIL, NAME, OAUTH_KIND) VALUES (?, ?, ?, ?)`;
+        await DB.query(conn, insertQuery, [userData.id, userData.kakao_account.email, userData.properties.nickname, 'kakao']);
+        console.log('사용자 추가');
+      } else {
+          // 이미 존재하는 사용자
+          console.log('기존에 존재하는 사용자');
+      }
+
+
+      const token = createToken(userData);
+      res.status(200).json({ token });
+  } catch (error) {
+      res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+// 네이버 로그인
+app.post('/login/naver', async (req, res) => {
+  //console.log("req.body", req.body);
+  const { code } = req.body;
+  try {
+      const { access_token } = await NaverClient.getAccessToken(code);
+      const userData = await NaverClient.getUserData(access_token);
+      //console.log("userData", userData);
+
+      //DB 사용자 등록 처리, 토큰 및 로그인 처리
+      const userCheckQuery = `SELECT * FROM MEMBER WHERE CID = ?`;
+      const userExist = await DB.query(conn, userCheckQuery, [userData.response.id]);
+
+      if(userExist.length === 0){
+        const insertQuery = `INSERT INTO MEMBER (CID, EMAIL, NAME, PHONENUMBER, OAUTH_KIND) VALUES (?, ?, ?, ?, ?)`;
+        await DB.query(conn, insertQuery, [userData.response.id, userData.response.email, userData.response.name, userData.response.mobile, 'naver']);
         console.log('사용자 추가');
       } else {
           // 이미 존재하는 사용자
