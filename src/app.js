@@ -5,6 +5,8 @@ import { KakaoClient } from "./oauth/kakao.js";
 import { NaverClient } from "./oauth/naver.js";
 import { GoogleClient } from "./oauth/google.js";
 import { createToken } from "./jwt/jwt.js";
+import { sendLink } from "./email/email.js";
+
 
 
 
@@ -137,5 +139,6 @@ app.post('/login/google', async (req, res) => {
   }
 });
 
+app.post("/signup/email", sendLink);
 
 export default app;
